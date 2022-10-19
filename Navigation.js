@@ -4,7 +4,10 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 
 import HomeScreen from "./Screens/HomeScreen";
+
 import HomeScreenT from "./Screens/Transportist/HomeScreenT";
+import Scaner from "./Screens/Transportist/Scaner";
+
 import SettingsScreen from "./Screens/SettingScreen";
 import StackScreen from "./Screens/StackScreen";
 import LoginScreen from "./Screens/LoginScreen";
@@ -19,6 +22,25 @@ function MyStack() {
       <HomeStackNavigator.Screen name="HomeScreen" component={HomeScreen} />
       <HomeStackNavigator.Screen name="Stack" component={StackScreen} />
     </HomeStackNavigator.Navigator>
+  );
+}
+
+//ejemplo de tab
+const Tab = createBottomTabNavigator();
+function MyTabs() {
+  return (
+    <Tab.Navigator initialRouteName="Home">
+      <Tab.Screen
+        name="Home"
+        component={MyStack}
+        options={{
+          tabBarLabel: "Inicio",
+          tabBarIcon: () => <Entypo name="home" size={24} color="black" />,
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen name="Settings" component={SettingsScreen} />
+    </Tab.Navigator>
   );
 }
 
@@ -40,35 +62,36 @@ const LogginStack = () => {
   );
 };
 
-//ejemplo de tab
-const Tab = createBottomTabNavigator();
-function MyTabs() {
+const TransportistStack = createNativeStackNavigator();
+//Stack from Transportist
+const TransportistS = () => {
   return (
-    <Tab.Navigator initialRouteName="Home">
-      <Tab.Screen
+    <TransportistStack.Navigator initialRouteName="HomeTS">
+      <TransportistStack.Screen name="HomeTS" component={HomeScreenT} options={{headerShown:false}} />
+      <TransportistStack.Screen name="Scanner" component={Scaner}/>
+    </TransportistStack.Navigator>
+  );
+};
+
+const TTab = createBottomTabNavigator();
+
+const TransportistaTab = () => {
+  return (
+    <TTab.Navigator initialRouteName="Home">
+      <TTab.Screen
         name="Home"
-        component={MyStack}
+        component={TransportistS}
         options={{
+          headerShown: false,
           tabBarLabel: "Inicio",
           tabBarIcon: () => <Entypo name="home" size={24} color="black" />,
           headerShown: false,
         }}
       />
       <Tab.Screen name="Settings" component={SettingsScreen} />
-    </Tab.Navigator>
-  );
-}
-
-const TTab = createBottomTabNavigator();
-
-const TransportistaTab = () =>{
-  return(
-    <TTab.Navigator initialRouteName="HomeTransportis">
-      <TTab.Screen name="HomeTransportis" component={HomeScreenT}/>
-      <Tab.Screen name="Settings" component={SettingsScreen} />
     </TTab.Navigator>
-  )
-}
+  );
+};
 
 const isSigned = true; //Variable que validará para el token
 
@@ -80,7 +103,6 @@ export default function Navigation() {
   );
 }
 
-const getval = async ()=>{
+const getval = async () => {
   return await AsyncStorage.getItem("ACCESS");
-}
-
+};
