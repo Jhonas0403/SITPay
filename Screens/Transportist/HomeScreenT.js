@@ -36,10 +36,6 @@ const HomeScreenT = () => {
         title={"Escanear QR"}
         onClick={() => navigation.navigate("Scanner")}
       />
-      <Buttons
-        title={"Cobrar Ingresos"}
-        onClick={() => navigation.navigate("Scanner")}
-      />
     </View>
   );
 };

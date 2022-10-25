@@ -1,10 +1,13 @@
 import React from "react";
 import { View, Text, StyleSheet, TextInput } from "react-native";
+import Label from "./Label";
+
+
 export default (props) => {
   const { title, quantity } = props;
   return (
     <View style={styles.containerData}>
-      <Text style={styles.textMount}>{title}</Text>
+      <Label text={title}/>
       <View style={styles.balanceContainer}>
       <TextInput
               style={styles.balance}

@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
 
-import { View, Text, StyleSheet, TextInput } from "react-native";
+import { View, Text, StyleSheet, Modal, Pressable } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 
 //components
 import Balance from "../../components/Balance";
 import Buttons from "../../components/Buttons";
-import Amount from "../../components/Amount";
+import Label from "../../components/Label";
+import ButtonAdds from "../../components/ButtonAdds";
 
 const Scaner = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [text, setText] = useState(1);
+  const [modal, setModal] = useState(false);
+  const [amount, setAmount] = useState(1);
 
   const askForCameraPermission = () => {
     (async () => {
@@ -26,8 +29,13 @@ const Scaner = () => {
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
+    setModal(true);
     setText(data);
     console.log("type: " + type + "\nData: " + data);
+  };
+  const handleCancelScan = () => {
+    setModal(!modal);
+    setScanned(!scanned);
   };
 
   return (
@@ -42,14 +50,49 @@ const Scaner = () => {
               />
             </View>
           </View>
-          <Amount title={"Monto a cobrar S/."} quantity={2} />
-          
+          <View style={styles.text}>
+            {scanned ? (
+              <Label text={"QR ENCONTRADO"} />
+            ) : (
+              <Label text={"BUSCANDO QR"} />
+            )}
+          </View>
+
           <View>
             {scanned && (
-              <Buttons
-                title={"Escanear Nuevo QR"}
-                onClick={() => [setScanned(false), setText("1")]}
-              />
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modal}
+                onRequestClose={() => {
+                  //Alert.alert("Modal has been closed.");
+                  setModal(!modal);
+                }}
+                presentationStyle={"overFullScreen"}
+              >
+                <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                    <Label text={"Monto a cobrarse"} />
+                    <View style={styles.actions}>
+                      <ButtonAdds
+                        type={"add"}
+                        onClick={() => {
+                          setAmount(amount + 1);
+                        }}
+                      />
+                      <Balance title={"Monto"} amount={amount} />
+                      <ButtonAdds
+                        type={"substract"}
+                        onClick={() => {
+                          setAmount(amount - 1);
+                        }}
+                      />
+                    </View>
+
+                    <Buttons title={"Cancelar"} onClick={handleCancelScan} />
+                  </View>
+                </View>
+              </Modal>
             )}
           </View>
         </>
@@ -72,14 +115,44 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     flex: 1,
-    backgroundColor: "#fff",
-    //marginTop: Dimensions.get("window").height * 0.05,
     backgroundColor: "#F6E8E2",
   },
+  actions: {
+   flexDirection: "row",
+   backgroundColor:"#F9F3F0",
+   alignItems:"flex-end",
+   justifyContent:"center",
+   borderRadius:10
+  },
+
   frame: {
     height: 400,
     width: 400,
     marginTop: 40,
+  },
+  text: {
+    marginTop: 30,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });
 

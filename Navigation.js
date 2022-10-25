@@ -94,11 +94,12 @@ const TransportistaTab = () => {
 };
 
 const isSigned = true; //Variable que validará para el token
+const isTransportist = true;
 
 export default function Navigation() {
   return (
     <NavigationContainer>
-      {isSigned ? TransportistaTab() : LogginStack()}
+      {(isSigned && isTransportist) ? TransportistaTab() : LogginStack()}
     </NavigationContainer>
   );
 }
