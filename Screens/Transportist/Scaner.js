@@ -8,13 +8,17 @@ import Balance from "../../components/Balance";
 import Buttons from "../../components/Buttons";
 import Label from "../../components/Label";
 import ButtonAdds from "../../components/ButtonAdds";
+import ButtonPay from "../../components/ButtonPay";
 
 const Scaner = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-  const [text, setText] = useState(1);
+  const [code, setCode] = useState(0); //information qr
   const [modal, setModal] = useState(false);
   const [amount, setAmount] = useState(1);
+
+  const [insufficientBalance, setInsufficientBalance] = useState(false);
+  const [sufficientBalance, setSufficientBalance] = useState(false);
 
   const askForCameraPermission = () => {
     (async () => {
@@ -22,20 +26,43 @@ const Scaner = () => {
       setHasPermission(status === "granted");
     })();
   };
-
   useEffect(() => {
     askForCameraPermission();
-  }, []);
+  }, [0]);
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
     setModal(true);
-    setText(data);
-    console.log("type: " + type + "\nData: " + data);
+    setCode(data);
   };
   const handleCancelScan = () => {
-    setModal(!modal);
+    modal && setModal(!modal);
+    insufficientBalance && setInsufficientBalance(!insufficientBalance);
+    sufficientBalance && setSufficientBalance(!sufficientBalance);
+
     setScanned(!scanned);
+    setAmount(1);
+  };
+
+  const validateAmount = () => {
+    if (amount < 0) {
+      setAmount(0);
+    }
+  };
+
+  useEffect(() => {
+    validateAmount();
+  }, [amount]);
+
+  const handlePayment = () => {
+    const amountCode = parseInt(code);
+    setModal(!modal);
+
+    if (amountCode < amount) {
+      setInsufficientBalance(true);
+    } else if (amountCode >= amount) {
+      setSufficientBalance(true);
+    }
   };
 
   return (
@@ -75,24 +102,76 @@ const Scaner = () => {
                     <Label text={"Monto a cobrarse"} />
                     <View style={styles.actions}>
                       <ButtonAdds
-                        type={"add"}
-                        onClick={() => {
-                          setAmount(amount + 1);
-                        }}
-                      />
-                      <Balance title={"Monto"} amount={amount} />
-                      <ButtonAdds
                         type={"substract"}
                         onClick={() => {
                           setAmount(amount - 1);
                         }}
                       />
+                      <Balance title={"Monto"} amount={amount} />
+                      <ButtonAdds
+                        type={"add"}
+                        onClick={() => {
+                          setAmount(amount + 1);
+                        }}
+                      />
                     </View>
-
+                    <ButtonPay title={"Cobrar"} onClick={handlePayment} />
                     <Buttons title={"Cancelar"} onClick={handleCancelScan} />
                   </View>
                 </View>
               </Modal>
+            )}
+
+            {insufficientBalance && (
+              <View>
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={insufficientBalance}
+                  onRequestClose={() => {
+                    //Alert.alert("Modal has been closed.");
+                    setModal(!modal);
+                  }}
+                  presentationStyle={"overFullScreen"}
+                >
+                  <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                      <Label text={"Monto a cobrarse"} />
+                      <View style={styles.actions}>
+                        <Text>Saldo insuficiente</Text>
+                      </View>
+                      <Buttons title={"Cancelar"} onClick={handleCancelScan} />
+                    </View>
+                  </View>
+                </Modal>
+              </View>
+            )}
+
+            {sufficientBalance && (
+              <View>
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={sufficientBalance}
+                  onRequestClose={() => {
+                    //Alert.alert("Modal has been closed.");
+                    setModal(!modal);
+                  }}
+                  presentationStyle={"overFullScreen"}
+                >
+                  <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                      <Label text={"Monto a cobrarse"} />
+                      <View style={styles.actions}>
+                        <Text>
+                         Cobro realizado con éxito
+                        </Text>
+                      </View>
+                      <Buttons title={"Cancelar"} onClick={handleCancelScan} />
+                    </View>
+                  </View>
+                </Modal>
+              </View>
             )}
           </View>
         </>
@@ -118,11 +197,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#F6E8E2",
   },
   actions: {
-   flexDirection: "row",
-   backgroundColor:"#F9F3F0",
-   alignItems:"flex-end",
-   justifyContent:"center",
-   borderRadius:10
+    flexDirection: "row",
+    backgroundColor: "#F9F3F0",
+    alignItems: "flex-end",
+    justifyContent: "center",
+    borderRadius: 10,
   },
 
   frame: {
