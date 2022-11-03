@@ -11,61 +11,43 @@ import {
 import { useNavigation } from "@react-navigation/native";
 
 //Images
-import Chofer from "../../assets/Chofer.png";
+import passenger from "../../assets/passenger.png";
 
 //Components
 import Header from "../../components/Header";
 import Balance from "../../components/Balance";
 import Buttons from "../../components/Buttons";
 
-const HomeScreenT = () => {
+const HomeScreenP = () => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
-      <Header title="Bienvenido Conductor(a)" />
+      <Header title="Bienvenido Pasajero(a)" />
 
       <View style={styles.imageContainerDriver}>
-        <Image source={Chofer} style={styles.imageDriver} />
+        <Image source={passenger} style={styles.imageDriver} />
       </View>
 
       <Text style={styles.nameDriver}>Jhonatan Huisacayna</Text>
 
-      <Balance title={"Tienes un saldo de S/."} amount={0} />
+      <Balance title={"Tienes un saldo de S/."} amount={5} />
 
       <Buttons
-        title={"Escanear QR"}
-        onClick={() => navigation.navigate("Scanner")}
+        title={"Crear QR"}
+        onClick={() => navigation.navigate("Create")}
+      />
+      <Buttons
+      title={"Hacer Recarga"}
+      onClick={() => navigation.navigate("Transfer")}
+
       />
     </View>
   );
 };
-export default HomeScreenT;
+export default HomeScreenP;
 
 const styles = StyleSheet.create({
-  header: {
-    backgroundColor: "#C6553D",
-    alignItems: "flex-start",
-    width: Dimensions.get("window").width,
-    height: 70,
-    justifyContent: "flex-start",
-  },
-
-  buttonQR: {
-    marginTop: 30,
-    backgroundColor: "#C6553D",
-    borderRadius: 10,
-    width: 250,
-    height: 50,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  TextQR: {
-    fontSize: 19,
-    fontWeight: "bold",
-    color: "#F9F3F0",
-  },
-
-  nameDriver: {
+nameDriver: {
     color: "#CC6655",
     fontWeight: "bold",
     fontSize: 21,

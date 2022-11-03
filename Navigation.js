@@ -8,6 +8,10 @@ import HomeScreen from "./Screens/HomeScreen";
 import HomeScreenT from "./Screens/Transportist/HomeScreenT";
 import Scaner from "./Screens/Transportist/Scaner";
 
+import HomeScreenP from "./Screens/Passenger/HomeScreenP";
+import CreateQR from "./Screens/Passenger/CreateQR";
+import Transfer from "./Screens/Passenger/Transfer";
+
 import SettingsScreen from "./Screens/SettingScreen";
 import StackScreen from "./Screens/StackScreen";
 import LoginScreen from "./Screens/LoginScreen";
@@ -62,6 +66,39 @@ const LogginStack = () => {
   );
 };
 
+const PassengerStack = createNativeStackNavigator();
+//Stack from Transportist
+const PassengerS = () => {
+  return (
+    <PassengerStack.Navigator initialRouteName="HomePS">
+      <PassengerStack.Screen name="HomePS" component={HomeScreenP} options={{headerShown:false}} />
+      <PassengerStack.Screen name="Create" component={CreateQR} options={{headerShown:false}} />
+      <PassengerStack.Screen name="Transfer" component={Transfer} options={{headerShown:false}} />
+      
+    </PassengerStack.Navigator>
+  );
+};
+
+const PTab = createBottomTabNavigator();
+
+const PassengerTab = () => {
+  return (
+    <PTab.Navigator initialRouteName="HomeP">
+      <PTab.Screen
+        name="HomeP"
+        component={PassengerS}
+        options={{
+          headerShown: false,
+          tabBarLabel: "Inicio",
+          tabBarIcon: () => <Entypo name="home" size={24} color="black" />,
+          headerShown: false,
+        }}
+      />
+      
+    </PTab.Navigator>
+  );
+};
+
 const TransportistStack = createNativeStackNavigator();
 //Stack from Transportist
 const TransportistS = () => {
@@ -77,9 +114,9 @@ const TTab = createBottomTabNavigator();
 
 const TransportistaTab = () => {
   return (
-    <TTab.Navigator initialRouteName="Home">
+    <TTab.Navigator initialRouteName="HomeT">
       <TTab.Screen
-        name="Home"
+        name="HomeT"
         component={TransportistS}
         options={{
           headerShown: false,
@@ -94,12 +131,15 @@ const TransportistaTab = () => {
 };
 
 const isSigned = true; //Variable que validará para el token
-const isTransportist = true;
+const isTransportist = false; //variable que valida si es transportista
 
 export default function Navigation() {
   return (
     <NavigationContainer>
-      {(isSigned && isTransportist) ? TransportistaTab() : LogginStack()}
+      
+      {isSigned?(
+        isTransportist?TransportistaTab():PassengerTab()
+      ): LogginStack()}
     </NavigationContainer>
   );
 }
