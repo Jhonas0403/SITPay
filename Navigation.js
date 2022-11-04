@@ -75,7 +75,7 @@ const PassengerS = () => {
       <PassengerStack.Screen name="HomePS" component={HomeScreenP} options={{headerShown:false}} />
       <PassengerStack.Screen name="Create" component={CreateQR} />
       <PassengerStack.Screen name="PassengerQR" component={PassengerQR} />
-      <PassengerStack.Screen name="Transfer" component={Transfer} options={{headerShown:false}} />
+      <PassengerStack.Screen name="Transfer" component={Transfer} />
       
     </PassengerStack.Navigator>
   );
