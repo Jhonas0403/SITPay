@@ -4,16 +4,16 @@ import Label from "./Label";
 
 
 export default (props) => {
-  const { title, quantity } = props;
+  const { title, quantity, defaultMount } = props;
   return (
     <View style={styles.containerData}>
       <Label text={title}/>
       <View style={styles.balanceContainer}>
       <TextInput
               style={styles.balance}
-              //onChangeText={onChangeNumber}
+              onChangeText={e=>quantity(e)}
               value={1}
-              defaultValue={1}
+              defaultValue={defaultMount}
               keyboardType="numeric"
             />
       </View>

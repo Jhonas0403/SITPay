@@ -11,6 +11,7 @@ import Scaner from "./Screens/Transportist/Scaner";
 import HomeScreenP from "./Screens/Passenger/HomeScreenP";
 import CreateQR from "./Screens/Passenger/CreateQR";
 import Transfer from "./Screens/Passenger/Transfer";
+import PassengerQR from "./Screens/Passenger/PassengerQR";
 
 import SettingsScreen from "./Screens/SettingScreen";
 import StackScreen from "./Screens/StackScreen";
@@ -72,7 +73,8 @@ const PassengerS = () => {
   return (
     <PassengerStack.Navigator initialRouteName="HomePS">
       <PassengerStack.Screen name="HomePS" component={HomeScreenP} options={{headerShown:false}} />
-      <PassengerStack.Screen name="Create" component={CreateQR} options={{headerShown:false}} />
+      <PassengerStack.Screen name="Create" component={CreateQR} />
+      <PassengerStack.Screen name="PassengerQR" component={PassengerQR} />
       <PassengerStack.Screen name="Transfer" component={Transfer} options={{headerShown:false}} />
       
     </PassengerStack.Navigator>
@@ -94,6 +96,7 @@ const PassengerTab = () => {
           headerShown: false,
         }}
       />
+      <PTab.Screen name="See" component={PassengerQR}/>
       
     </PTab.Navigator>
   );
