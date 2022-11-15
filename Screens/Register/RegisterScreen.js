@@ -44,7 +44,7 @@ const RegisterScreen = () => {
         passUser: password,
       };
       axios
-        .post("http://localhost:4000/api/users/add", usuario)
+        .post("http://192.168.1.13:4000/api/users/add", usuario)
         .then((response) => {
           if(response.data.status === 'OK'){
             navigation.navigate("LoginScreen")
@@ -53,6 +53,9 @@ const RegisterScreen = () => {
         .catch((error) => {
           console.log(error);
         });
+        {/*axios.get("https://rickandmortyapi.com/api/character").then(response=>{
+          console.log(response);
+        })*/}
     }
   };
 
@@ -71,7 +74,7 @@ const RegisterScreen = () => {
           <SelectDropdown
             data={roles}
             onSelect={(selectedItem, index) => {
-              setRole(index);
+              setRole(index+1);
             }}
             buttonTextAfterSelection={(selectedItem, index) => {
               // text represented after item is selected
