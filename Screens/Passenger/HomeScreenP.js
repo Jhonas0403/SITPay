@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   View,
@@ -17,8 +17,40 @@ import passenger from "../../assets/passenger.png";
 import Header from "../../components/Header";
 import Balance from "../../components/Balance";
 import Buttons from "../../components/Buttons";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomeScreenP = () => {
+  const [amount, setAmount] = useState(0);
+  const [id, setId] = useState("");
+
+  //recuperando informacion
+  const getIdUser = async () => {
+    value = await AsyncStorage.getItem("ID");
+    setId(value);
+  };
+
+  useEffect(() => {
+    getIdUser();
+  }, []);
+
+  //query pide monto
+  const getAmount = () => {
+    axios
+      .get(`http://192.168.1.13:4000/api/amount/${id}`)
+      .then((response) => {
+        const { amoAcc } = response.data[0];
+        setAmount(amoAcc);
+      })
+      .catch((error) => {
+        //console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    getAmount();
+  }, [id!== ""]);
+
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
@@ -30,16 +62,15 @@ const HomeScreenP = () => {
 
       <Text style={styles.nameDriver}>Jhonatan Huisacayna</Text>
 
-      <Balance title={"Tienes un saldo de S/."} amount={5} />
+      <Balance title={"Tienes un saldo de S/."} amount={amount} />
 
       <Buttons
         title={"Crear QR"}
         onClick={() => navigation.navigate("Create")}
       />
       <Buttons
-      title={"Hacer Recarga"}
-      onClick={() => navigation.navigate("Transfer")}
-
+        title={"Hacer Recarga"}
+        onClick={() => navigation.navigate("Transfer")}
       />
     </View>
   );
@@ -47,7 +78,7 @@ const HomeScreenP = () => {
 export default HomeScreenP;
 
 const styles = StyleSheet.create({
-nameDriver: {
+  nameDriver: {
     color: "#CC6655",
     fontWeight: "bold",
     fontSize: 21,
