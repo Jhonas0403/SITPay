@@ -26,21 +26,28 @@ const HomeScreenP = () => {
 
   //recuperando informacion
   const getIdUser = async () => {
-    value = await AsyncStorage.getItem("ID");
+    const value = await AsyncStorage.getItem("ID");
     setId(value);
   };
 
   useEffect(() => {
     getIdUser();
   }, []);
+  const navigation = useNavigation();
+
 
   //query pide monto
   const getAmount = () => {
     axios
       .get(`http://192.168.1.13:4000/api/amount/${id}`)
       .then((response) => {
-        const { amoAcc } = response.data[0];
-        setAmount(amoAcc);
+        const {status} = response.data
+        if(status === 'OK'){
+          const { amoAcc } = response.data.result[0];
+          setAmount(amoAcc);
+        }else if(status==="Error"){
+          console.log("no tienes saldo en cuenta");
+        }
       })
       .catch((error) => {
         //console.log(error);
@@ -49,9 +56,8 @@ const HomeScreenP = () => {
 
   useEffect(() => {
     getAmount();
-  }, [id!== ""]);
+  }, [id!== "" ]);
 
-  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <Header title="Bienvenido Pasajero(a)" />

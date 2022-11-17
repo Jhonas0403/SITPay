@@ -14,8 +14,9 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import Label from "../components/Label";
 
+
 const setInformation = async (props) => {
-  const { rolUser, status,idUser } = props;
+  const { rolUser, status, idUser } = props;
   try {
     await AsyncStorage.setItem("SESSION", status);
     await AsyncStorage.setItem("ROLE", String(rolUser));
@@ -32,6 +33,7 @@ const LoginScreen = () => {
   const [password, setPassword] = useState("");
   const [exist, setExist] = useState(false);
 
+
   const handleLoginST = () => {
     const usuario = { user, password };
     axios
@@ -39,11 +41,11 @@ const LoginScreen = () => {
       .then((response) => {
         const { status } = response.data;
         if (status === "OK") {
-          const { rolUser,idUser } = response.data.result[0];
+          const { rolUser, idUser } = response.data.result[0];
           setInformation({ rolUser, status, idUser });
           rolUser === 1 && navigation.navigate("Transportist");
           rolUser === 2 && navigation.navigate("Passenger");
-        } else if (status === "Error") {
+        }else if(status === "Error"){
           setExist(true);
         }
       })
@@ -76,11 +78,9 @@ const LoginScreen = () => {
         <TouchableOpacity>
           <Text style={styles.forget}>¿Olvidaste tu Contraseña?</Text>
         </TouchableOpacity>
-        {exist && (
-          <Label
-            text={"Ingrese correctamente sus crendenciales o Registrese"}
-          />
-        )}
+        {exist&&
+          <Label text={"Ingrese correctamente sus crendenciales o Registrese"}/>
+        }
         <TouchableOpacity style={styles.button_login} onPress={handleLoginST}>
           <Text style={styles.text_login}>Iniciar Sesión</Text>
         </TouchableOpacity>
