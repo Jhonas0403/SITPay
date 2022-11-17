@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,14 +6,29 @@ import {
   TextInput,
   StyleSheet,
   Dimensions,
-  AsyncStorage,
 } from "react-native";
 
 //navigation
 import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
 
 const LoginScreen = () => {
   const navigation = useNavigation();
+  const [user, setUser] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLoginST = () => {
+    const usuario ={user, password};
+    axios
+    .post("http://192.168.1.13:4000/api/users/login", usuario)
+    .then((response) => {
+      console.log(response.data);
+
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -22,20 +37,25 @@ const LoginScreen = () => {
 
       <View style={styles.form}>
         <Text style={styles.labels}>Nombre de Usuario</Text>
-        <TextInput style={styles.inputs} placeholder="a@a" />
+        <TextInput
+          style={styles.inputs}
+          placeholder="a@a"
+          onChangeText={(e) => setUser(e)}
+        />
 
         <Text style={styles.labels}>Contraseña</Text>
         <TextInput
           style={styles.inputs}
           placeholder="contraseña"
           secureTextEntry={true}
+          onChangeText={(e) => setPassword(e)}
         />
 
         <TouchableOpacity>
           <Text style={styles.forget}>¿Olvidaste tu Contraseña?</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button_login}>
+        <TouchableOpacity style={styles.button_login} onPress={handleLoginST}>
           <Text style={styles.text_login}>Iniciar Sesión</Text>
         </TouchableOpacity>
       </View>
