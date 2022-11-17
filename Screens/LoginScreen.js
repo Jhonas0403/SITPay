@@ -7,27 +7,50 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //navigation
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
+import Label from "../components/Label";
+
+
+const setInformation = async (props) => {
+  const { rolUser, status } = props;
+  try {
+    await AsyncStorage.setItem("SESSION", status);
+    await AsyncStorage.setItem("ROLE", String(rolUser));
+  } catch (error) {
+    console.log(error);
+    console.log("Error when try to save data");
+  }
+};
 
 const LoginScreen = () => {
   const navigation = useNavigation();
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
+  const [exist, setExist] = useState(false);
+
 
   const handleLoginST = () => {
-    const usuario ={user, password};
+    const usuario = { user, password };
     axios
-    .post("http://192.168.1.13:4000/api/users/login", usuario)
-    .then((response) => {
-      console.log(response.data);
-
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      .post("http://192.168.1.13:4000/api/users/login", usuario)
+      .then((response) => {
+        const { status } = response.data;
+        if (status === "OK") {
+          const { rolUser } = response.data.result[0];
+          setInformation({ rolUser, status });
+          rolUser === 1 && navigation.navigate("Transportist");
+          rolUser === 2 && navigation.navigate("Passenger");
+        }else if(status === "Error"){
+          setExist(true);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -54,7 +77,9 @@ const LoginScreen = () => {
         <TouchableOpacity>
           <Text style={styles.forget}>¿Olvidaste tu Contraseña?</Text>
         </TouchableOpacity>
-
+        {exist&&
+          <Label text={"Ingrese correctamente sus crendenciales o Registrese"}/>
+        }
         <TouchableOpacity style={styles.button_login} onPress={handleLoginST}>
           <Text style={styles.text_login}>Iniciar Sesión</Text>
         </TouchableOpacity>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -20,6 +20,7 @@ import Welcomescreen from "./Screens/WelcomeScreen";
 import RegisterScreen from "./Screens/Register/RegisterScreen";
 
 import { Entypo } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomeStackNavigator = createNativeStackNavigator();
 //ejemplo de Stack
@@ -66,6 +67,8 @@ const LogginStack = () => {
         options={{ headerShown: false }}
       />
       <LoginStackNavigator.Screen name="Register" component={RegisterScreen} />
+      <LoginStackNavigator.Screen name="Transportist" component={TransportistaTab}  options={{ headerShown: false }}/>
+      <LoginStackNavigator.Screen name="Passenger" component={PassengerTab}  options={{ headerShown: false }}/>
     </LoginStackNavigator.Navigator>
   );
 };
@@ -142,14 +145,26 @@ const TransportistaTab = () => {
   );
 };
 
-const isSigned = false; //Variable que validará para el token
-const isTransportist = false; //variable que valida si es transportista
-
 export default function Navigation() {
+  const [isSigned, setIsSigned] = useState("");
+  const [isTransportist, setIsTransportist] = useState("");
+  const getInformation = async () => {
+    try {
+      value1 = await AsyncStorage.getItem("SESSION");
+      setIsSigned(value1);
+      value2 = await AsyncStorage.getItem("ROLE");
+      setIsTransportist(value2);
+    } catch (e) {
+      //    console.log(error);
+    }
+  };
+
+  getInformation();
+
   return (
     <NavigationContainer>
-      {isSigned
-        ? isTransportist
+      {isSigned === "OK"
+        ? isTransportist == "1"
           ? TransportistaTab()
           : PassengerTab()
         : LogginStack()}
