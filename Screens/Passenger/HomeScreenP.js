@@ -23,6 +23,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const HomeScreenP = () => {
   const [amount, setAmount] = useState(0);
   const [id, setId] = useState("");
+  const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
 
   //recuperando informacion
   const getIdUser = async () => {
@@ -54,8 +56,27 @@ const HomeScreenP = () => {
       });
   };
 
+  const getInformation = () => {
+    axios
+      .get(`http://192.168.1.13:4000/api/users/${id}`)
+      .then((response) => {
+        const {status} = response.data
+        if(status === 'OK'){
+          const { lasNamUser, namUser } = response.data.result[0];
+          setLastName(lasNamUser);
+          setName(namUser);
+        }else if(status==="Error"){
+          console.log("hubo un error al cargar la data");
+        }
+      })
+      .catch((error) => {
+        //console.log(error);
+      });
+  }
+
   useEffect(() => {
     getAmount();
+    getInformation();
   }, [id!== "" ]);
 
   return (
@@ -66,7 +87,7 @@ const HomeScreenP = () => {
         <Image source={passenger} style={styles.imageDriver} />
       </View>
 
-      <Text style={styles.nameDriver}>Jhonatan Huisacayna</Text>
+      <Text style={styles.nameDriver}>{name} {lastName}</Text>
 
       <Balance title={"Tienes un saldo de S/."} amount={amount} />
 
