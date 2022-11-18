@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   View,
@@ -18,7 +18,64 @@ import Header from "../../components/Header";
 import Balance from "../../components/Balance";
 import Buttons from "../../components/Buttons";
 
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const HomeScreenT = () => {
+  const [amount, setAmount] = useState(0);
+  const [id, setId] = useState("");
+  const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
+
+  const getIdUser = async () => {
+    const value = await AsyncStorage.getItem("ID");
+    setId(value);
+  };
+  useEffect(() => {
+    getIdUser();
+  }, []);
+
+  //query pide monto
+  const getAmount = () => {
+    axios
+      .get(`http://192.168.1.13:4000/api/amount/${id}`)
+      .then((response) => {
+        const { status } = response.data;
+        if (status === "OK") {
+          const { amoAcc } = response.data.result[0];
+          setAmount(amoAcc);
+        } else if (status === "Error") {
+          console.log("no tienes saldo en cuenta");
+        }
+      })
+      .catch((error) => {
+        //console.log(error);
+      });
+  };
+
+  const getInformation = () => {
+    axios
+      .get(`http://192.168.1.13:4000/api/users/${id}`)
+      .then((response) => {
+        const { status } = response.data;
+        if (status === "OK") {
+          const { lasNamUser, namUser } = response.data.result[0];
+          setLastName(lasNamUser);
+          setName(namUser);
+        } else if (status === "Error") {
+          console.log("hubo un error al cargar la data");
+        }
+      })
+      .catch((error) => {
+        //console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    getAmount();
+    getInformation();
+  }, [id !== ""]);
+
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
@@ -28,9 +85,9 @@ const HomeScreenT = () => {
         <Image source={Chofer} style={styles.imageDriver} />
       </View>
 
-      <Text style={styles.nameDriver}>Jhonatan Huisacayna</Text>
+      <Text style={styles.nameDriver}>{name} {lastName}</Text>
 
-      <Balance title={"Tienes un saldo de S/."} amount={0} />
+      <Balance title={"Tienes un saldo de S/."} amount={amount} />
 
       <Buttons
         title={"Escanear QR"}
