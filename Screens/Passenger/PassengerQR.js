@@ -10,6 +10,8 @@ import Label from "../../components/Label";
 const PassengerQR = ({ route }) => {
   //const { amount,idQR,isNew } = route.params;
   //amount===undefined&&(amount="10");
+
+  console.log(route.params);
   let idQR=1
   let amount =10
   let isNew=false

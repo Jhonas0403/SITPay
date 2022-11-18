@@ -4,34 +4,37 @@ import { View, Text, StyleSheet, Modal } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import Label from "../../components/Label";
-import Amount from "../../components/Amount";
+import Denomination from "../../components/Amount";
 import Buttons from "../../components/Buttons";
 import ButtonPay from "../../components/ButtonPay";
+import Balance from "../../components/Balance";
+import Input from "../../components/Input";
 
-const CreateQR = () => {
+const CreateQR = ({ route }) => {
   const navigation = useNavigation();
-  const [monto, setMonto] = useState(10);
+  const [denominatios, setDenominations] = useState("");
   const [confirmation, setConfirmation] = useState(false);
+
+  const { amount, account, id } = route.params;
+  console.log(account, id);
 
   const handleCreationQR = () => {
     setConfirmation(!confirmation);
     navigation.navigate("PassengerQR", {
-      amount: monto,
-      idQR:1,
-      isNew:true,
+      nombre: denominatios,
+      amount,
+      account, id,
+      isNew:true
     });
   };
 
   return (
     <View style={styles.container}>
       <Label text={"Creando QR"} />
-      <Amount
-        title={"Ingrese el monto para QR"}
-        quantity={setMonto}
-        defaultMount={monto + ""}
-      />
+      <Balance title={"Se crearan los códigos QR por"} amount={amount} />
+      <Input title="Denominación para el QR" information ={setDenominations}/>
       <Buttons
-        title={`Crear QR por S/. ${monto}`}
+        title={`Crear QR para ${denominatios}`}
         onClick={() => setConfirmation(true)}
       />
 
@@ -49,8 +52,7 @@ const CreateQR = () => {
           <View style={styles.modalView}>
             <Label text={"Monto a cobrarse"} />
             <Text>
-              Se creará un código QR por S/.{monto}. Presione confirmar para
-              continuar
+              Se creará un código QR para {denominatios}. Presione confirmar para continuar
             </Text>
             <ButtonPay title={"Confirmar"} onClick={handleCreationQR} />
             <Buttons

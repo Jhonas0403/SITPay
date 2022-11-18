@@ -23,6 +23,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const HomeScreenP = () => {
   const [amount, setAmount] = useState(0);
   const [id, setId] = useState("");
+  const [idAcount, setIdAcount] = useState("");
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
 
@@ -37,17 +38,17 @@ const HomeScreenP = () => {
   }, []);
   const navigation = useNavigation();
 
-
   //query pide monto
   const getAmount = () => {
     axios
       .get(`http://192.168.1.13:4000/api/amount/${id}`)
       .then((response) => {
-        const {status} = response.data
-        if(status === 'OK'){
-          const { amoAcc } = response.data.result[0];
+        const { status } = response.data;
+        if (status === "OK") {
+          const { idAcc, amoAcc } = response.data.result[0];
           setAmount(amoAcc);
-        }else if(status==="Error"){
+          setIdAcount(idAcc);
+        } else if (status === "Error") {
           console.log("no tienes saldo en cuenta");
         }
       })
@@ -60,24 +61,24 @@ const HomeScreenP = () => {
     axios
       .get(`http://192.168.1.13:4000/api/users/${id}`)
       .then((response) => {
-        const {status} = response.data
-        if(status === 'OK'){
+        const { status } = response.data;
+        if (status === "OK") {
           const { lasNamUser, namUser } = response.data.result[0];
           setLastName(lasNamUser);
           setName(namUser);
-        }else if(status==="Error"){
+        } else if (status === "Error") {
           console.log("hubo un error al cargar la data");
         }
       })
       .catch((error) => {
         //console.log(error);
       });
-  }
+  };
 
   useEffect(() => {
     getAmount();
     getInformation();
-  }, [id!== "" ]);
+  }, [id !== ""]);
 
   return (
     <View style={styles.container}>
@@ -87,17 +88,23 @@ const HomeScreenP = () => {
         <Image source={passenger} style={styles.imageDriver} />
       </View>
 
-      <Text style={styles.nameDriver}>{name} {lastName}</Text>
+      <Text style={styles.nameDriver}>
+        {name} {lastName}
+      </Text>
 
       <Balance title={"Tienes un saldo de S/."} amount={amount} />
 
       <Buttons
         title={"Crear QR"}
-        onClick={() => navigation.navigate("Create")}
+        onClick={() =>
+          navigation.navigate("Create", { account: idAcount, amount, id })
+        }
       />
       <Buttons
         title={"Hacer Recarga"}
-        onClick={() => navigation.navigate("Transfer",{cantidad: amount, id: id})}
+        onClick={() =>
+          navigation.navigate("Transfer", { cantidad: amount, id: id })
+        }
       />
     </View>
   );
