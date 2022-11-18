@@ -97,7 +97,7 @@ const HomeScreenP = () => {
       />
       <Buttons
         title={"Hacer Recarga"}
-        onClick={() => navigation.navigate("Transfer")}
+        onClick={() => navigation.navigate("Transfer",{cantidad: amount, id: id})}
       />
     </View>
   );
