@@ -11,16 +11,16 @@ const PassengerQR = ({ route }) => {
   //const { amount,idQR,isNew } = route.params;
   //amount===undefined&&(amount="10");
 
-  console.log(route.params);
-  let idQR=1
-  let amount =10
-  let isNew=false
-  if(route.params!==undefined){
+  //console.log(route.params);
+  let idQR = 1;
+  let amount = 10;
+  let isNew = false;
+  if (route.params !== undefined) {
     amount = route.params.amount;
     idQR = route.params.idQR;
     isNew = route.params.isNew;
   }
-  
+
   const [status, setStatus] = useState(0);
   const [modalE, setModalE] = useState(true); //state para el modal de éxito
   const [modalEr, setModalEr] = useState(true); //state para error
@@ -28,6 +28,13 @@ const PassengerQR = ({ route }) => {
   const [modalN, setModalN] = useState(false); //state para modal de nuevo
 
   const navigation = useNavigation();
+
+  const { account, nombre } = route.params;
+
+  //console.log(data);
+
+
+
   const handleQrError = () => {
     setModalEr(!modalEr);
     navigation.navigate("HomePS");
@@ -63,36 +70,36 @@ const PassengerQR = ({ route }) => {
         <>
           {isNew && (
             <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalE}
-            onRequestClose={() => {
-              //Alert.alert("Modal has been closed.");
-              setModalE(!modalE);
-            }}
-            presentationStyle={"overFullScreen"}
-          >
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <Label text={"¡Exito!"} />
+              animationType="slide"
+              transparent={true}
+              visible={modalE}
+              onRequestClose={() => {
+                //Alert.alert("Modal has been closed.");
+                setModalE(!modalE);
+              }}
+              presentationStyle={"overFullScreen"}
+            >
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <Label text={"¡Exito!"} />
 
-                <Text>
-                  El código QR se ha creado con éxito.
-                  {"\n"}Presione continuar para poder usarlo.
-                </Text>
+                  <Text>
+                    El código QR se ha creado con éxito.
+                    {"\n"}Presione continuar para poder usarlo.
+                  </Text>
 
-                <Buttons
-                  title={"Continuar"}
-                  onClick={() => setModalE(!modalE)}
-                />
+                  <Buttons
+                    title={"Continuar"}
+                    onClick={() => setModalE(!modalE)}
+                  />
+                </View>
               </View>
-            </View>
-          </Modal>
+            </Modal>
           )}
           <QRCode
             size={256}
             style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-            value={amount + "-"+idQR}
+            value={amount + "-" + idQR}
             viewBox={`0 0 256 256`}
           />
           <Buttons
@@ -116,12 +123,15 @@ const PassengerQR = ({ route }) => {
 
                 <Text>
                   El código QR actual se eliminará.
-                  {"\n"}El código QR se eliminará y se creará uno nuevo. Pulse confirmar para validar la operación.
+                  {"\n"}El código QR se eliminará y se creará uno nuevo. Pulse
+                  confirmar para validar la operación.
                 </Text>
 
-                <Buttons title={"Confirmar"} onClick={handleNewQR}/>
-                <ButtonPay title={"Cancelar"}  onClick={()=> setModalN(!modalN)}/>
-
+                <Buttons title={"Confirmar"} onClick={handleNewQR} />
+                <ButtonPay
+                  title={"Cancelar"}
+                  onClick={() => setModalN(!modalN)}
+                />
               </View>
             </View>
           </Modal>

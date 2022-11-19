@@ -96,6 +96,7 @@ const HomeScreenP = () => {
 
       <Buttons
         title={"Crear QR"}
+        disabled ={amount===0?true:false}
         onClick={() =>
           navigation.navigate("Create", { account: idAcount, amount, id })
         }

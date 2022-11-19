@@ -46,7 +46,7 @@ const Transfer = ({ route }) => {
         quantity={setMonto}
         defaultMount={monto + ""}
       />
-      <Buttons title={`Crear QR por S/. ${monto}`} onClick={handleCharge} />
+      <Buttons title={`Hacer recarga por S/. ${monto}`} onClick={handleCharge} />
     </View>
   );
 };

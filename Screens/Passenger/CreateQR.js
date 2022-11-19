@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 import { View, Text, StyleSheet, Modal } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
+
 
 import Label from "../../components/Label";
 import Denomination from "../../components/Amount";
@@ -16,15 +18,32 @@ const CreateQR = ({ route }) => {
   const [confirmation, setConfirmation] = useState(false);
 
   const { amount, account, id } = route.params;
-  console.log(account, id);
+
+  
+  const data = { idAccount: account, denoCode: denominatios };
+
+  const addCode = () => {
+    axios
+      .post("http://192.168.1.13:4000/api/code/add", data)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const handleCreationQR = () => {
     setConfirmation(!confirmation);
+
+    addCode();
+    
     navigation.navigate("PassengerQR", {
       nombre: denominatios,
       amount,
-      account, id,
-      isNew:true
+      account,
+      id,
+      isNew: true,
     });
   };
 
@@ -32,7 +51,7 @@ const CreateQR = ({ route }) => {
     <View style={styles.container}>
       <Label text={"Creando QR"} />
       <Balance title={"Se crearan los códigos QR por"} amount={amount} />
-      <Input title="Denominación para el QR" information ={setDenominations}/>
+      <Input title="Denominación para el QR" information={setDenominations} />
       <Buttons
         title={`Crear QR para ${denominatios}`}
         onClick={() => setConfirmation(true)}
@@ -52,7 +71,8 @@ const CreateQR = ({ route }) => {
           <View style={styles.modalView}>
             <Label text={"Monto a cobrarse"} />
             <Text>
-              Se creará un código QR para {denominatios}. Presione confirmar para continuar
+              Se creará un código QR para {denominatios}. Presione confirmar
+              para continuar
             </Text>
             <ButtonPay title={"Confirmar"} onClick={handleCreationQR} />
             <Buttons

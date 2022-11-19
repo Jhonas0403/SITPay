@@ -2,9 +2,10 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 export default (props) => {
-  const { title, onClick } = props;
+  const { title, onClick, disabled } = props;
   return (
     <TouchableOpacity
+      disabled={disabled}
       style={styles.buttonQR}
       onPress={onClick}
     >
