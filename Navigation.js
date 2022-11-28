@@ -12,6 +12,7 @@ import HomeScreenP from "./Screens/Passenger/HomeScreenP";
 import CreateQR from "./Screens/Passenger/CreateQR";
 import Transfer from "./Screens/Passenger/Transfer";
 import PassengerQR from "./Screens/Passenger/PassengerQR";
+import AllQr from "./Screens/Passenger/AllQr"
 
 import SettingsScreen from "./Screens/SettingScreen";
 import StackScreen from "./Screens/StackScreen";
@@ -105,7 +106,7 @@ const PassengerTab = () => {
           headerShown: false,
         }}
       />
-      <PTab.Screen name="See" component={PassengerQR} />
+      <PTab.Screen name="See" component={AllQr} />
     </PTab.Navigator>
   );
 };
