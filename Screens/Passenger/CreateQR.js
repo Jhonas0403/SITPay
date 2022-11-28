@@ -24,7 +24,7 @@ const CreateQR = ({ route }) => {
 
   const addCode = () => {
     axios
-      .post("http://192.168.1.13:4000/api/code/add", data)
+      .post("http://192.168.1.12:4000/api/code/add", data)
       .then((response) => {
         console.log(response.data);
       })
@@ -69,7 +69,7 @@ const CreateQR = ({ route }) => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Label text={"Monto a cobrarse"} />
+            <Label text={"Creando QR"} />
             <Text>
               Se creará un código QR para {denominatios}. Presione confirmar
               para continuar

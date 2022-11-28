@@ -11,7 +11,7 @@ const PassengerQR = ({ route }) => {
   //const { amount,idQR,isNew } = route.params;
   //amount===undefined&&(amount="10");
 
-  //console.log(route.params);
+  console.log("detalle",route.params);
   let idQR = 1;
   let amount = 10;
   let isNew = false;
@@ -29,7 +29,7 @@ const PassengerQR = ({ route }) => {
 
   const navigation = useNavigation();
 
-  const { account, nombre } = route.params;
+  const { account, nombre, id } = route.params;
 
   //console.log(data);
 
@@ -99,9 +99,10 @@ const PassengerQR = ({ route }) => {
           <QRCode
             size={256}
             style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-            value={amount + "-" + idQR}
+            value={id+"-"+nombre}
             viewBox={`0 0 256 256`}
           />
+          <Label text={nombre} />
           <Buttons
             title={"Crear nuevo QR"}
             onClick={() => setModalN(!modalN)}
