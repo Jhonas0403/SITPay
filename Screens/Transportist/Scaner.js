@@ -10,13 +10,16 @@ import Label from "../../components/Label";
 import ButtonAdds from "../../components/ButtonAdds";
 import ButtonPay from "../../components/ButtonPay";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Scaner = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [code, setCode] = useState([]); //information qr
   const [modal, setModal] = useState(false);
+  const [am, setAm] = useState(0);
   const [amount, setAmount] = useState(1);
+  const [id, setId] = useState("");
 
   const [insufficientBalance, setInsufficientBalance] = useState(false);
   const [sufficientBalance, setSufficientBalance] = useState(false);
@@ -31,16 +34,24 @@ const Scaner = () => {
     askForCameraPermission();
   }, [0]);
 
+  const getIdUser = async () => {
+    const value = await AsyncStorage.getItem("ID");
+    setId(value);
+  };
+
+  useEffect(() => {
+    getIdUser();
+  }, []);
   const validationStatus = (params) => {
     const deno = params.substr(2, params.length);
-    const id = params[0];
+    const idv = params[0];
     const data = {
       denomination: deno,
     };
     axios
-      .post(`http://192.168.1.8:4000/api/code/status/${id}`, data)
+      .post(`http://192.168.1.8:4000/api/code/status/${idv}`, data)
       .then((response) => {
-        response.data.result[0].status===1 && setModal(true);
+        response.data.result[0].status === 1 && setModal(true);
       })
       .catch((error) => {
         //console.log(error);
@@ -58,7 +69,7 @@ const Scaner = () => {
     insufficientBalance && setInsufficientBalance(!insufficientBalance);
     sufficientBalance && setSufficientBalance(!sufficientBalance);
 
-    setScanned(!scanned);
+    setScanned(false);
     setAmount(1);
   };
 
@@ -74,13 +85,28 @@ const Scaner = () => {
 
   const handlePayment = () => {
     //hacer validacion
-    const amountCode = parseInt(code);
+    /* const amountCode = parseInt(code);
     setModal(!modal);
 
     if (amountCode < amount) {
       setInsufficientBalance(true);
     } else if (amountCode >= amount) {
       setSufficientBalance(true);
+    }*/
+    //console.log(typeof amount);
+    if (amount > 0) {
+      setModal(!modal);
+      setScanned(false);
+      const data = {
+        idOrigin: code[0],
+        amount,
+      };
+      axios
+        .post(`http://192.168.1.8:4000/api/code/transfer/${id}`,data)
+        .then((response) => {
+          (response.data.message=== "Ok")&& setSufficientBalance(true);
+          (response.data.message=== "error")&& setInsufficientBalance(true);
+        });
     }
   };
 
@@ -184,7 +210,7 @@ const Scaner = () => {
                       <View style={styles.actions}>
                         <Text>Cobro realizado con éxito</Text>
                       </View>
-                      <Buttons title={"Cancelar"} onClick={handleCancelScan} />
+                      <Buttons title={"Entendido"} onClick={handleCancelScan} />
                     </View>
                   </View>
                 </Modal>
