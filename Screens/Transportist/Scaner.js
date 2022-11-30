@@ -9,11 +9,12 @@ import Buttons from "../../components/Buttons";
 import Label from "../../components/Label";
 import ButtonAdds from "../../components/ButtonAdds";
 import ButtonPay from "../../components/ButtonPay";
+import axios from "axios";
 
 const Scaner = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-  const [code, setCode] = useState(0); //information qr
+  const [code, setCode] = useState([]); //information qr
   const [modal, setModal] = useState(false);
   const [amount, setAmount] = useState(1);
 
@@ -30,10 +31,27 @@ const Scaner = () => {
     askForCameraPermission();
   }, [0]);
 
+  const validationStatus = (params) => {
+    const deno = params.substr(2, params.length);
+    const id = params[0];
+    const data = {
+      denomination: deno,
+    };
+    axios
+      .post(`http://192.168.1.8:4000/api/code/status/${id}`, data)
+      .then((response) => {
+        response.data.result[0].status===1 && setModal(true);
+      })
+      .catch((error) => {
+        //console.log(error);
+      });
+  };
+
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    setModal(true);
+    //setModal(true);
     setCode(data);
+    validationStatus(data);
   };
   const handleCancelScan = () => {
     modal && setModal(!modal);
@@ -55,6 +73,7 @@ const Scaner = () => {
   }, [amount]);
 
   const handlePayment = () => {
+    //hacer validacion
     const amountCode = parseInt(code);
     setModal(!modal);
 
@@ -163,9 +182,7 @@ const Scaner = () => {
                     <View style={styles.modalView}>
                       <Label text={"Monto a cobrarse"} />
                       <View style={styles.actions}>
-                        <Text>
-                         Cobro realizado con éxito
-                        </Text>
+                        <Text>Cobro realizado con éxito</Text>
                       </View>
                       <Buttons title={"Cancelar"} onClick={handleCancelScan} />
                     </View>
