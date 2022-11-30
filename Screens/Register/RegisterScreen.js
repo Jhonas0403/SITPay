@@ -44,7 +44,7 @@ const RegisterScreen = () => {
         passUser: password,
       };
       axios
-        .post("http://192.168.1.12:4000/api/users/add", usuario)
+        .post("http://192.168.1.8:4000/api/users/add", usuario)
         .then((response) => {
           if(response.data.status === 'OK'){
             navigation.navigate("LoginScreen")

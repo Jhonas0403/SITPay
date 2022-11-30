@@ -41,7 +41,7 @@ const HomeScreenP = () => {
   //query pide monto
   const getAmount = () => {
     axios
-      .get(`http://192.168.1.12:4000/api/amount/${id}`)
+      .get(`http://192.168.1.8:4000/api/amount/${id}`)
       .then((response) => {
         const { status } = response.data;
         if (status === "OK") {
@@ -59,7 +59,7 @@ const HomeScreenP = () => {
 
   const getInformation = () => {
     axios
-      .get(`http://192.168.1.12:4000/api/users/${id}`)
+      .get(`http://192.168.1.8:4000/api/users/${id}`)
       .then((response) => {
         const { status } = response.data;
         if (status === "OK") {
@@ -71,7 +71,7 @@ const HomeScreenP = () => {
         }
       })
       .catch((error) => {
-        //console.log(error);
+        console.log(error);
       });
   };
 

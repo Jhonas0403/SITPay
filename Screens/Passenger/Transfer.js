@@ -27,7 +27,7 @@ const Transfer = ({ route }) => {
         amount: parseInt(monto) + cantidad,
       };
       axios
-        .put(`http://192.168.1.12:4000/api/amount/recarga/${id}`, data)
+        .put(`http://192.168.1.8:4000/api/amount/recarga/${id}`, data)
         .then((response) => {
           console.log(response.data);
           navigation.navigate("HomePS");

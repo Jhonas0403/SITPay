@@ -37,7 +37,7 @@ const LoginScreen = () => {
   const handleLoginST = () => {
     const usuario = { user, password };
     axios
-      .post("http://192.168.1.12:4000/api/users/login", usuario)
+      .post("http://192.168.1.8:4000/api/users/login", usuario)
       .then((response) => {
         const { status } = response.data;
         if (status === "OK") {

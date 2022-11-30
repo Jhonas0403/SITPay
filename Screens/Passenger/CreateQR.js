@@ -24,7 +24,7 @@ const CreateQR = ({ route }) => {
 
   const addCode = () => {
     axios
-      .post("http://192.168.1.12:4000/api/code/add", data)
+      .post("http://192.168.1.8:4000/api/code/add", data)
       .then((response) => {
         console.log(response.data);
       })
